@@ -7,6 +7,8 @@ import { Search, Coins, ChevronRight, RefreshCw, Smartphone, Globe, Zap, Monitor
 export const Offers = () => {
   const [search, setSearch] = useState('');
   const [activeOs, setActiveOs] = useState<'desktop' | 'android' | 'ios' | null>(null);
+  const [category, setCategory] = useState('all');
+  const [recommendation, setRecommendation] = useState('all');
   const [isSyncing, setIsSyncing] = useState(false);
 
   const { data, isLoading, refetch } = useQuery({
@@ -83,12 +85,33 @@ export const Offers = () => {
 
           {/* Categories & Sync */}
           <div className="flex items-center gap-3 w-full lg:w-auto justify-end">
-            <button className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold bg-transparent border border-white/5 text-slate-300 hover:bg-white/5 transition-all">
-              Categories <ChevronDown size={14} className="text-slate-500" />
-            </button>
-            <button className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold bg-transparent border border-white/5 text-slate-300 hover:bg-white/5 transition-all">
-              Recommended <ChevronDown size={14} className="text-slate-500" />
-            </button>
+            <div className="relative">
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="appearance-none flex items-center gap-2 px-4 py-2 pr-8 rounded-xl text-sm font-semibold bg-transparent border border-white/5 text-slate-300 hover:bg-white/5 transition-all focus:outline-none focus:ring-1 focus:ring-white/20"
+              >
+                <option value="all" className="bg-[#110C1D]">Categories</option>
+                <option value="game" className="bg-[#110C1D]">Game Rewards</option>
+                <option value="signup" className="bg-[#110C1D]">Signup Rewards</option>
+                <option value="website" className="bg-[#110C1D]">Website Rewards</option>
+              </select>
+              <ChevronDown size={14} className="text-slate-500 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+            </div>
+            
+            <div className="relative">
+              <select
+                value={recommendation}
+                onChange={(e) => setRecommendation(e.target.value)}
+                className="appearance-none flex items-center gap-2 px-4 py-2 pr-8 rounded-xl text-sm font-semibold bg-transparent border border-white/5 text-slate-300 hover:bg-white/5 transition-all focus:outline-none focus:ring-1 focus:ring-white/20"
+              >
+                <option value="all" className="bg-[#110C1D]">Recommended</option>
+                <option value="my_offers" className="bg-[#110C1D]">My Offers</option>
+                <option value="huge_offers" className="bg-[#110C1D]">Huge Offers</option>
+              </select>
+              <ChevronDown size={14} className="text-slate-500 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+            </div>
+
             <button
               onClick={handleSync}
               disabled={isSyncing}
@@ -144,11 +167,36 @@ export const Offers = () => {
                 if (activeOs === 'desktop') {
                   return offer.os?.toLowerCase().includes('web') || offer.os?.toLowerCase().includes('desktop') || offer.os?.toLowerCase() === 'all' || !offer.os;
                 }
+                
+                // Category Filtering
+                if (category === 'game') {
+                  if (offer.off_type?.toLowerCase() !== 'game' && !offer.name?.toLowerCase().includes('game')) return false;
+                }
+                if (category === 'signup') {
+                  const text = (offer.name + ' ' + (offer.desc_raw || '')).toLowerCase();
+                  if (!text.includes('sign') && !text.includes('register') && !text.includes('account')) return false;
+                }
+                if (category === 'website') {
+                  if (!offer.os?.toLowerCase().includes('web') && offer.off_type?.toLowerCase() !== 'cpa') return false;
+                }
+
                 return true;
               })
               .filter((offer: any, index: number, self: any[]) => {
                 // Deduplicate offers with the exact same name and OS type
                 return index === self.findIndex((t) => t.name === offer.name && t.os === offer.os);
+              })
+              .sort((a: any, b: any) => {
+                // Sorting for Recommendations
+                if (recommendation === 'huge_offers') {
+                  return (b.payout_usd || 0) - (a.payout_usd || 0); // Highest payout first
+                }
+                if (recommendation === 'my_offers') {
+                  // "My offers" could randomly shuffle or sort by lowest to give a mix of achievable tasks
+                  // We'll use a string comparison on the name for a deterministic pseudo-random sort
+                  return a.name.localeCompare(b.name);
+                }
+                return 0; // Default sort order from DB
               })
               .map((offer: any) => (
               <Link
