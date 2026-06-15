@@ -12,4 +12,11 @@
             "runtime": "@vercel/go"
         }
     }
+  },
+  "rewrites": [
+    {
+      "source": "/callback",
+      "destination": "/api/callback"
+    }
+  ]
 }
