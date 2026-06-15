@@ -149,7 +149,11 @@ func Callback(c *gin.Context) {
 
 	log.Printf("[S2S] ✅ Success: user=%d credited=%d coins token=%s", userId, valueInt, pubscaleToken)
 
-	// ── 7. Return HTTP 200 so PubScale marks delivery as successful ─────────
+	// ── 7. Return HTTP 200 or redirect so PubScale marks delivery as successful ─────────
+	if c.Query("redirect") == "true" {
+		c.Redirect(http.StatusFound, "/wallet")
+		return
+	}
 	c.JSON(http.StatusOK, gin.H{"message": "Success"})
 }
 
@@ -275,6 +279,7 @@ func SimulateCallbackPage(c *gin.Context) {
 				<input type="hidden" name="value" value="%s">
 				<input type="hidden" name="token" value="%s">
 				<input type="hidden" name="signature" value="%s">
+				<input type="hidden" name="redirect" value="true">
 				<button type="submit" class="btn">Complete Task & Claim Reward</button>
 			</form>
 		</div>

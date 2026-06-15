@@ -77,23 +77,9 @@ func StartOffer(c *gin.Context) {
 		db.DB.Create(&userOffer)
 	}
 
-	trackingURL := offer.TrkURL
-	if trackingURL == "" {
-		trackingURL = fmt.Sprintf("https://earnsaga.example.com/track?user=%d&offer=%s", userId, offer.OfferID)
-	} else {
-		// Replace common placeholder tokens so PubScale attributes correctly
-		replacements := map[string]string{
-			"{your_user_id}": fmt.Sprintf("%d", userId),
-			"{USER_ID}":      fmt.Sprintf("%d", userId),
-			"[USER_ID]":      fmt.Sprintf("%d", userId),
-			"{subid}":        fmt.Sprintf("%d", userId),
-		}
-		for k, v := range replacements {
-			if len(trackingURL) > 0 {
-				trackingURL = replaceAll(trackingURL, k, v)
-			}
-		}
-	}
+	// For demo purposes, we always redirect to the simulation page so the user can complete the flow
+	encodedName := url.QueryEscape(offer.Name)
+	trackingURL := fmt.Sprintf("/api/callback/simulate?user_id=%d&offer_id=%s&value=%d&name=%s", userId, offer.OfferID, offer.InappPytAmt, encodedName)
 
 	c.JSON(http.StatusOK, gin.H{
 		"redirectUrl": trackingURL,
