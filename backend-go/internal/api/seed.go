@@ -29,7 +29,7 @@ var seedOffers = []SeedOffer{
 		IcURL: "https://play-lh.googleusercontent.com/7uDjhYsLJGr7kSDOJcxzVBLXJcqfLiXBbFo7RMzH9h-jD3Xm4fqVFHPz_UXvGQ_J2A=w480-h960",
 		PayoutUSD: 3.50, InappPytAmt: 350, OffType: "App", OS: "Android",
 		DescRaw: "Download Coin Master and reach <b>Level 50</b> to earn 350 coins!",
-		TrkURL:  "https://api-dev.sikkaapp.in/v1/offer/redirect?offer_id=demo_001&app_id=66555042&sub_id={your_user_id}",
+		TrkURL:  "https://track.pubscale.com/click?offer=demo_001&user={your_user_id}",
 		Goals:   []map[string]string{{"ttl": "Download Coin Master", "instr": "Install from Play Store"}, {"ttl": "Reach Level 50", "instr": "Play and spin to reach level 50"}},
 	},
 	{
@@ -37,7 +37,7 @@ var seedOffers = []SeedOffer{
 		IcURL: "https://play-lh.googleusercontent.com/rqkCH9lOXlPDNnxv7MVzMcRv8j0TtIB9YkPpHalJAqKMa_sOiJJJJeMCeRWEedTXXA=w480-h960",
 		PayoutUSD: 5.00, InappPytAmt: 500, OffType: "Game", OS: "iOS",
 		DescRaw: "Install <b>RAID: Shadow Legends</b> and play for 7 consecutive days!",
-		TrkURL:  "https://api-dev.sikkaapp.in/v1/offer/redirect?offer_id=demo_002&app_id=66555042&sub_id={your_user_id}",
+		TrkURL:  "https://track.pubscale.com/click?offer=demo_002&user={your_user_id}",
 		Goals:   []map[string]string{{"ttl": "Install the game", "instr": "Download from App Store"}, {"ttl": "Play 7 days in a row", "instr": "Log in daily for 7 days"}},
 	},
 	{
@@ -45,7 +45,7 @@ var seedOffers = []SeedOffer{
 		IcURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Survey_icon.svg/240px-Survey_icon.svg.png",
 		PayoutUSD: 1.50, InappPytAmt: 150, OffType: "Survey", OS: "All",
 		DescRaw: "Complete a <b>5-minute survey</b> about consumer habits and earn 150 coins!",
-		TrkURL:  "https://api-dev.sikkaapp.in/v1/offer/redirect?offer_id=demo_003&app_id=66555042&sub_id={your_user_id}",
+		TrkURL:  "https://track.pubscale.com/click?offer=demo_003&user={your_user_id}",
 		Goals:   []map[string]string{{"ttl": "Complete survey", "instr": "Answer all questions honestly"}},
 	},
 	{
@@ -53,7 +53,7 @@ var seedOffers = []SeedOffer{
 		IcURL: "https://play-lh.googleusercontent.com/MVKaFxmOHQTDTRv0yJAGYYKw1fI78s-wBdMXNk_TgNBX8lCDDmkfUomfGOe16fPRmQ=w480-h960",
 		PayoutUSD: 2.00, InappPytAmt: 200, OffType: "Game", OS: "Android",
 		DescRaw: "Download <b>Subway Surfers</b> and score 500,000 points to unlock your reward!",
-		TrkURL:  "https://api-dev.sikkaapp.in/v1/offer/redirect?offer_id=demo_004&app_id=66555042&sub_id={your_user_id}",
+		TrkURL:  "https://track.pubscale.com/click?offer=demo_004&user={your_user_id}",
 		Goals:   []map[string]string{{"ttl": "Download game", "instr": "Install from Play Store"}, {"ttl": "Score 500K", "instr": "Run, jump and dodge obstacles"}},
 	},
 	{
@@ -61,7 +61,7 @@ var seedOffers = []SeedOffer{
 		IcURL: "https://play-lh.googleusercontent.com/0hDN4Ao5VXKOFXe4hQILUlFqH9Dt-KWWG5ggbQvLuoUYgZzxcO0R0iBPklz1vlSiOXA=w480-h960",
 		PayoutUSD: 2.50, InappPytAmt: 250, OffType: "App", OS: "iOS",
 		DescRaw: "Learn a new language with <b>Duolingo</b>! Maintain a 7-day streak to earn coins.",
-		TrkURL:  "https://api-dev.sikkaapp.in/v1/offer/redirect?offer_id=demo_005&app_id=66555042&sub_id={your_user_id}",
+		TrkURL:  "https://track.pubscale.com/click?offer=demo_005&user={your_user_id}",
 		Goals:   []map[string]string{{"ttl": "Install Duolingo", "instr": "Download from App Store"}, {"ttl": "Keep a 7-day streak", "instr": "Complete at least one lesson daily"}},
 	},
 	{
@@ -69,7 +69,7 @@ var seedOffers = []SeedOffer{
 		IcURL: "https://logowik.com/content/uploads/images/fiverr-new2799.jpg",
 		PayoutUSD: 8.00, InappPytAmt: 800, OffType: "Shopping", OS: "All",
 		DescRaw: "Place your <b>first order</b> on Fiverr and get 800 coins instantly credited!",
-		TrkURL:  "https://api-dev.sikkaapp.in/v1/offer/redirect?offer_id=demo_006&app_id=66555042&sub_id={your_user_id}",
+		TrkURL:  "https://track.pubscale.com/click?offer=demo_006&user={your_user_id}",
 		Goals:   []map[string]string{{"ttl": "Sign up on Fiverr", "instr": "Create a free account"}, {"ttl": "Place your first order", "instr": "Buy any service"}},
 	},
 	{
@@ -77,7 +77,7 @@ var seedOffers = []SeedOffer{
 		IcURL: "https://play-lh.googleusercontent.com/A6y8kFPu6iiFg7RSkGxyNspjOBmeaD3oAOip5dqQvXAznOMfNyHMBPycaXSPCOXELA=w480-h960",
 		PayoutUSD: 4.00, InappPytAmt: 400, OffType: "Game", OS: "Android",
 		DescRaw: "Build your village in <b>Clash of Clans</b> and reach Town Hall Level 8!",
-		TrkURL:  "https://api-dev.sikkaapp.in/v1/offer/redirect?offer_id=demo_007&app_id=66555042&sub_id={your_user_id}",
+		TrkURL:  "https://track.pubscale.com/click?offer=demo_007&user={your_user_id}",
 		Goals:   []map[string]string{{"ttl": "Install the game", "instr": "Download from Play Store"}, {"ttl": "Reach Town Hall 8", "instr": "Upgrade your town hall"}},
 	},
 	{
@@ -85,7 +85,7 @@ var seedOffers = []SeedOffer{
 		IcURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/NordVPN_Logo.svg/240px-NordVPN_Logo.svg.png",
 		PayoutUSD: 12.00, InappPytAmt: 1200, OffType: "Subscription", OS: "All",
 		DescRaw: "Sign up for <b>NordVPN</b>'s 1-month trial and earn 1200 coins!",
-		TrkURL:  "https://api-dev.sikkaapp.in/v1/offer/redirect?offer_id=demo_008&app_id=66555042&sub_id={your_user_id}",
+		TrkURL:  "https://track.pubscale.com/click?offer=demo_008&user={your_user_id}",
 		Goals:   []map[string]string{{"ttl": "Sign up for NordVPN", "instr": "Create account and start trial"}},
 	},
 }
