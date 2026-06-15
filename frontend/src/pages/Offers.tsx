@@ -6,7 +6,7 @@ import { Search, Coins, ChevronRight, RefreshCw, Smartphone, Globe, Zap } from '
 
 export const Offers = () => {
   const [search, setSearch] = useState('');
-  const [filterOS, setFilterOS] = useState<'all' | 'app' | 'web'>('all');
+  const [filterOS, setFilterOS] = useState<'all' | 'android' | 'ios' | 'web'>('all');
   const [isSyncing, setIsSyncing] = useState(false);
 
   const { data, isLoading, refetch } = useQuery({
@@ -58,23 +58,28 @@ export const Offers = () => {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
-            </div>
-            <div className="flex bg-white/5 rounded-2xl p-1 border border-white/10">
+            <div className="flex bg-white/5 rounded-2xl p-1 border border-white/10 overflow-x-auto max-w-full no-scrollbar">
               <button
                 onClick={() => setFilterOS('all')}
-                className={`px-4 py-1.5 rounded-xl text-sm font-bold transition-all ${filterOS === 'all' ? 'bg-white/10 text-white' : 'text-slate-400 hover:text-white'}`}
+                className={`px-4 py-1.5 rounded-xl text-sm font-bold transition-all whitespace-nowrap ${filterOS === 'all' ? 'bg-white/10 text-white' : 'text-slate-400 hover:text-white'}`}
               >
                 All
               </button>
               <button
-                onClick={() => setFilterOS('app')}
-                className={`px-4 py-1.5 rounded-xl text-sm font-bold transition-all ${filterOS === 'app' ? 'bg-emerald-500/20 text-emerald-400' : 'text-slate-400 hover:text-white'}`}
+                onClick={() => setFilterOS('android')}
+                className={`px-4 py-1.5 rounded-xl text-sm font-bold transition-all whitespace-nowrap ${filterOS === 'android' ? 'bg-emerald-500/20 text-emerald-400' : 'text-slate-400 hover:text-white'}`}
               >
-                App
+                Android
+              </button>
+              <button
+                onClick={() => setFilterOS('ios')}
+                className={`px-4 py-1.5 rounded-xl text-sm font-bold transition-all whitespace-nowrap ${filterOS === 'ios' ? 'bg-blue-500/20 text-blue-400' : 'text-slate-400 hover:text-white'}`}
+              >
+                iPhone
               </button>
               <button
                 onClick={() => setFilterOS('web')}
-                className={`px-4 py-1.5 rounded-xl text-sm font-bold transition-all ${filterOS === 'web' ? 'bg-purple-500/20 text-purple-400' : 'text-slate-400 hover:text-white'}`}
+                className={`px-4 py-1.5 rounded-xl text-sm font-bold transition-all whitespace-nowrap ${filterOS === 'web' ? 'bg-purple-500/20 text-purple-400' : 'text-slate-400 hover:text-white'}`}
               >
                 Web
               </button>
@@ -119,13 +124,20 @@ export const Offers = () => {
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {data
               .filter((offer: any) => {
-                if (filterOS === 'app') {
-                  return offer.os?.toLowerCase().includes('android') || offer.os?.toLowerCase().includes('ios');
+                if (filterOS === 'android') {
+                  return offer.os?.toLowerCase().includes('android');
+                }
+                if (filterOS === 'ios') {
+                  return offer.os?.toLowerCase().includes('ios');
                 }
                 if (filterOS === 'web') {
                   return offer.os?.toLowerCase().includes('web') || offer.os?.toLowerCase() === 'all' || !offer.os;
                 }
                 return true;
+              })
+              .filter((offer: any, index: number, self: any[]) => {
+                // Deduplicate offers with the exact same name and OS type
+                return index === self.findIndex((t) => t.name === offer.name && t.os === offer.os);
               })
               .map((offer: any) => (
               <Link
