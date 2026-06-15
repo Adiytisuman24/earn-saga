@@ -7,7 +7,9 @@
         },
         "backend": {
             "root": "backend-go",
-            "routePrefix": "/api"
+            "routePrefix": "/api",
+            "entrypoint": "cmd/main.go",
+            "runtime": "@vercel/go"
         }
     }
 }
