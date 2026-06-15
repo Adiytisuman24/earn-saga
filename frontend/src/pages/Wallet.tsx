@@ -9,7 +9,7 @@ export const Wallet = () => {
   const [payoutStatus, setPayoutStatus] = useState<{loading: boolean, error: string | null, success: boolean}>({
     loading: false, error: null, success: false
   });
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, refetch } = useQuery({
     queryKey: ['wallet'],
     queryFn: async () => {
       const res = await api.get('/wallet');
