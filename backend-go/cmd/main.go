@@ -39,6 +39,14 @@ func main() {
 		MaxAge:           12 * time.Hour,
 	}))
 
+	// Health check — Render pings this to verify the service is alive
+	r.GET("/", func(c *gin.Context) {
+		c.JSON(200, gin.H{"status": "ok", "service": "EarnSaga API"})
+	})
+	r.GET("/health", func(c *gin.Context) {
+		c.JSON(200, gin.H{"status": "ok"})
+	})
+
 	api.RegisterRoutes(r)
 
 	port := os.Getenv("PORT")
