@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 	"time"
 
 	"earnsaga-lite/backend-go/internal/api"
@@ -12,6 +13,8 @@ import (
 )
 
 func main() {
+	// Load .env only if env vars are not already set (local dev only)
+	// On Render/production, env vars are injected directly and take priority
 	_ = godotenv.Load()
 
 	db.InitDB()
@@ -20,7 +23,15 @@ func main() {
 	r := gin.Default()
 
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:5173", "http://localhost:3000", "http://localhost:5000"},
+		AllowOrigins: []string{
+			"http://localhost:5173",
+			"http://localhost:3000",
+			"http://localhost:5000",
+			"https://earn-saga.vercel.app",
+			"https://earnsaga.vercel.app",
+			// wildcard for any vercel preview
+			"https://earn-saga-git-main-adiytisuman24.vercel.app",
+		},
 		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
@@ -30,8 +41,12 @@ func main() {
 
 	api.RegisterRoutes(r)
 
-	log.Println("Server running on port 3000")
-	if err := r.Run(":3000"); err != nil {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "3000"
+	}
+	log.Printf("Server running on port %s", port)
+	if err := r.Run(":" + port); err != nil {
 		log.Fatalf("Server failed to start: %v", err)
 	}
 }
