@@ -12,9 +12,6 @@ func RegisterRoutes(r *gin.Engine) {
 
 	api.POST("/auth/google", GoogleLogin)
 	api.GET("/callback", Callback)       // S2S Callback from PubScale
-	api.GET("/callback/simulate", SimulateCallbackPage) // Mock redirect landing page for testing
-	api.GET("/mock-network/click", MockNetworkClick)       // Mock Affiliate Network - Tracking Click
-	api.POST("/mock-network/purchase", MockNetworkPurchase) // Mock Affiliate Network - Destination Purchase
 	api.POST("/offers/sync", SyncOffers) // Sync from PubScale API
 	api.POST("/seed", SeedDemoOffers)    // Seed demo offers (dev only)
 

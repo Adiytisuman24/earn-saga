@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"os"
 	"strconv"
+	"strings"
 
 	"earnsaga-lite/backend-go/internal/db"
 	"earnsaga-lite/backend-go/internal/models"
@@ -82,12 +83,11 @@ func StartOffer(c *gin.Context) {
 		db.DB.Create(&userOffer)
 	}
 
-	// Redirect through our Mock Affiliate Network for perfect single-tab simulation
-	encodedName := url.QueryEscape(offer.Name)
-	mockNetworkUrl := fmt.Sprintf("/api/mock-network/click?user_id=%d&offer_id=%s&value=%d&name=%s", userId, offer.OfferID, offer.InappPytAmt, encodedName)
+	// Replace {your_user_id} with actual user ID in the tracking URL
+	realTrackingUrl := strings.Replace(offer.TrkURL, "{your_user_id}", strconv.Itoa(int(userId)), -1)
 
 	c.JSON(http.StatusOK, gin.H{
-		"redirectUrl": mockNetworkUrl,
+		"redirectUrl": realTrackingUrl,
 	})
 }
 
@@ -144,9 +144,13 @@ func SyncOffers(c *gin.Context) {
 		pubKey = "C423E0560E41A9EF42876CC684CB1F74"
 	}
 
-	apiURL := "https://api-dev.sikkaapp.in/v1/offer/api"
+	apiURL := "https://api-ow.pubscale.com/v1/offer/api"
 
-	reqBody, _ := json.Marshal(map[string]interface{}{})
+	payload := map[string]interface{}{
+		"page": 1,
+		"size": 1000,
+	}
+	reqBody, _ := json.Marshal(payload)
 	req, err := http.NewRequest("POST", apiURL, bytes.NewBuffer(reqBody))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to build request"})
