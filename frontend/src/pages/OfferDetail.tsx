@@ -65,8 +65,7 @@ export const OfferDetail = () => {
           setTimeout(() => refetch(), 2000);
         } else {
           // Otherwise redirect directly (Website offer or mobile device user)
-          window.open(res.data.redirectUrl, '_blank');
-          setTimeout(() => refetch(), 2000);
+          window.location.href = res.data.redirectUrl;
         }
       }
     } catch (err: any) {
@@ -192,12 +191,14 @@ export const OfferDetail = () => {
                 <div className="bg-white p-4 rounded-2xl shadow-xl">
                   <QRCodeSVG value={qrUrl} size={180} level="H" />
                 </div>
-                <button 
-                  onClick={() => window.open(qrUrl, '_blank')}
+                <a 
+                  href={qrUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="mt-6 text-sm text-emerald-400 hover:text-emerald-300 font-bold flex items-center gap-1.5 underline"
                 >
                   Or open tracking link directly <ExternalLink size={14} />
-                </button>
+                </a>
               </div>
             )}
 
