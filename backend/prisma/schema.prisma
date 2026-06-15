@@ -1,0 +1,85 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String
+  picture   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  wallet     Wallet?
+  userOffers UserOffer[]
+}
+
+model Wallet {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @unique
+  balance   Int      @default(0) // Balance in coins
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user         User          @relation(fields: [userId], references: [id])
+  transactions Transaction[]
+}
+
+model Offer {
+  id              Int      @id @default(autoincrement())
+  offer_id        String   @unique // PubScale's unique ID
+  name            String
+  ic_url          String?
+  payout_usd      Float?
+  inapp_pyt_amt   Int?
+  desc_raw        String?
+  trk_url         String
+  off_type        String?
+  os              String?
+  geo_tgt_include String[]
+  geo_tgt_exclude String[]
+  pubscale_upd_ts Int?
+  goals           Json?    // Array of goals
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  userOffers UserOffer[]
+}
+
+model UserOffer {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  offerId   Int
+  status    String   // IN_PROGRESS, COMPLETED
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user  User  @relation(fields: [userId], references: [id])
+  offer Offer @relation(fields: [offerId], references: [id])
+
+  @@unique([userId, offerId])
+}
+
+model Transaction {
+  id        Int      @id @default(autoincrement())
+  walletId  Int
+  amount    Int
+  type      String   // CREDIT, DEBIT
+  reference String?  // e.g. "offer_123_completion"
+  timestamp DateTime @default(now())
+
+  wallet Wallet @relation(fields: [walletId], references: [id])
+}
+
+model CallbackLog {
+  id            Int      @id @default(autoincrement())
+  pubscaleToken String   @unique // for idempotency
+  userId        Int
+  value         Float
+  status        String   // SUCCESS, FAILED
+  createdAt     DateTime @default(now())
+}
