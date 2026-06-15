@@ -76,11 +76,13 @@ func Callback(c *gin.Context) {
 
 	// ── 3. Idempotency — check Redis first (fast path) ──────────────────────
 	redisKey := "callback:" + pubscaleToken
-	exists, _ := db.RedisClient.Exists(db.Ctx, redisKey).Result()
-	if exists > 0 {
-		log.Printf("[S2S] Already processed (Redis): token=%s", pubscaleToken)
-		c.JSON(http.StatusOK, gin.H{"message": "Already processed"})
-		return
+	if db.RedisClient != nil {
+		exists, _ := db.RedisClient.Exists(db.Ctx, redisKey).Result()
+		if exists > 0 {
+			log.Printf("[S2S] Already processed (Redis): token=%s", pubscaleToken)
+			c.JSON(http.StatusOK, gin.H{"message": "Already processed"})
+			return
+		}
 	}
 
 	// ── 4+5. Atomic DB transaction — credit wallet + mark offer complete ─────
@@ -145,7 +147,9 @@ func Callback(c *gin.Context) {
 	}
 
 	// ── 6. Set Redis flag to prevent future duplicates ──────────────────────
-	db.RedisClient.Set(db.Ctx, redisKey, "1", 30*24*time.Hour)
+	if db.RedisClient != nil {
+		db.RedisClient.Set(db.Ctx, redisKey, "1", 30*24*time.Hour)
+	}
 
 	log.Printf("[S2S] ✅ Success: user=%d credited=%d coins token=%s", userId, valueInt, pubscaleToken)
 

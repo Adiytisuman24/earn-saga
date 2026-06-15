@@ -25,8 +25,12 @@ func InitRedis() {
 
 	_, err := RedisClient.Ping(Ctx).Result()
 	if err != nil {
-		log.Fatalf("Failed to connect to Redis: %v", err)
+		// Redis is optional — used only for dedup protection.
+		// Server will still work without it; DB-level uniqueness index handles dedup.
+		log.Printf("⚠️  Redis unavailable (dedup via DB only): %v", err)
+		RedisClient = nil
+		return
 	}
 
-	log.Println("Redis connected")
+	log.Println("Redis connected ✅")
 }
