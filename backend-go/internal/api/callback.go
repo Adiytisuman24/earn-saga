@@ -58,7 +58,7 @@ func Callback(c *gin.Context) {
 	// The dots are LITERAL separators in the concatenated string
 	pubscaleKey := os.Getenv("PUBSCALE_KEY")
 	if pubscaleKey == "" {
-		pubscaleKey = "6b80727c-016c-4cc3-9615-0470a51828b2"
+		pubscaleKey = "C423E0560E41A9EF42876CC684CB1F74"
 	}
 
 	valueInt := int(value) // truncate to integer as per docs
@@ -163,7 +163,7 @@ func SimulateCallbackPage(c *gin.Context) {
 	// Build signature formula: MD5(secret_key.user_id.int(value).token)
 	pubscaleKey := os.Getenv("PUBSCALE_KEY")
 	if pubscaleKey == "" {
-		pubscaleKey = "6b80727c-016c-4cc3-9615-0470a51828b2"
+		pubscaleKey = "C423E0560E41A9EF42876CC684CB1F74"
 	}
 	sigInput := fmt.Sprintf("%s.%s.%s.%s", pubscaleKey, userId, value, token)
 	hash := md5.Sum([]byte(sigInput))

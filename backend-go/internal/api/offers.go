@@ -150,7 +150,7 @@ func SyncOffers(c *gin.Context) {
 		appId = "66555042"
 	}
 	if pubKey == "" {
-		pubKey = "6b80727c-016c-4cc3-9615-0470a51828b2"
+		pubKey = "C423E0560E41A9EF42876CC684CB1F74"
 	}
 
 	apiURL := "https://api-dev.sikkaapp.in/v1/offer/api"
