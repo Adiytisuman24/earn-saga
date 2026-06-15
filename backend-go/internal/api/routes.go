@@ -27,5 +27,7 @@ func RegisterRoutes(r *gin.Engine) {
 
 		protected.GET("/wallet", GetWallet)
 		protected.POST("/wallet/payout", RequestPayout)
+
+		protected.POST("/analytics/track", TrackActivity)
 	}
 }

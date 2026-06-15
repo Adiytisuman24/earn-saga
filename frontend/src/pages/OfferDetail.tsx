@@ -4,12 +4,14 @@ import { useQuery } from '@tanstack/react-query';
 import { api } from '../lib/api';
 import { Coins, ArrowLeft, CheckCircle2, Play, ExternalLink, ArrowRight, Zap, QrCode } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
+import { useAnalytics } from '../hooks/useAnalytics';
 
 export const OfferDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [isStarting, setIsStarting] = useState(false);
   const [qrUrl, setQrUrl] = useState<string | null>(null);
+  const { track } = useAnalytics();
 
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['offer', id],
@@ -47,9 +49,16 @@ export const OfferDetail = () => {
     }
   });
 
+  React.useEffect(() => {
+    if (data?.offer) {
+      track('PAGE_VIEW', { page: 'OfferDetail', offer_id: data.offer.offer_id, name: data.offer.name });
+    }
+  }, [data?.offer, track]);
+
   const handleStart = async () => {
     try {
       setIsStarting(true);
+      track('START_OFFER_CLICK', { offer_id: data?.offer?.offer_id, name: data?.offer?.name });
       const res = await api.post(`/offers/${id}/start`);
       if (res.data.redirectUrl) {
         // Navigate to the Mock Affiliate Network (tracks → checkout → postback → wallet)

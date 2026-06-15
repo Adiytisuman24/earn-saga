@@ -3,6 +3,8 @@ import { useQuery } from '@tanstack/react-query';
 import { api } from '../lib/api';
 import { Link } from 'react-router-dom';
 import { Search, Coins, ChevronRight, RefreshCw, Smartphone, Globe, Zap, Monitor, ChevronDown } from 'lucide-react';
+import { useAnalytics } from '../hooks/useAnalytics';
+
 
 export const Offers = () => {
   const [search, setSearch] = useState('');
@@ -10,6 +12,11 @@ export const Offers = () => {
   const [category, setCategory] = useState('all');
   const [recommendation, setRecommendation] = useState('all');
   const [isSyncing, setIsSyncing] = useState(false);
+  const { track } = useAnalytics();
+
+  React.useEffect(() => {
+    track('PAGE_VIEW', { page: 'Offers' });
+  }, [track]);
 
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['offers', search],
@@ -33,7 +40,19 @@ export const Offers = () => {
   };
 
   const toggleOs = (os: 'desktop' | 'android' | 'ios') => {
-    setActiveOs(activeOs === os ? null : os);
+    const newOs = activeOs === os ? null : os;
+    setActiveOs(newOs);
+    track('FILTER_OS', { os: newOs });
+  };
+
+  const handleCategoryChange = (val: string) => {
+    setCategory(val);
+    track('FILTER_CATEGORY', { category: val });
+  };
+
+  const handleRecommendationChange = (val: string) => {
+    setRecommendation(val);
+    track('FILTER_RECOMMENDATION', { recommendation: val });
   };
 
   return (
@@ -88,7 +107,7 @@ export const Offers = () => {
             <div className="relative">
               <select
                 value={category}
-                onChange={(e) => setCategory(e.target.value)}
+                onChange={(e) => handleCategoryChange(e.target.value)}
                 className="appearance-none flex items-center gap-2 px-4 py-2 pr-8 rounded-xl text-sm font-semibold bg-transparent border border-white/5 text-slate-300 hover:bg-white/5 transition-all focus:outline-none focus:ring-1 focus:ring-white/20"
               >
                 <option value="all" className="bg-[#110C1D]">Categories</option>
@@ -102,7 +121,7 @@ export const Offers = () => {
             <div className="relative">
               <select
                 value={recommendation}
-                onChange={(e) => setRecommendation(e.target.value)}
+                onChange={(e) => handleRecommendationChange(e.target.value)}
                 className="appearance-none flex items-center gap-2 px-4 py-2 pr-8 rounded-xl text-sm font-semibold bg-transparent border border-white/5 text-slate-300 hover:bg-white/5 transition-all focus:outline-none focus:ring-1 focus:ring-white/20"
               >
                 <option value="all" className="bg-[#110C1D]">Recommended</option>
@@ -202,7 +221,8 @@ export const Offers = () => {
               <Link
                 key={offer.id}
                 to={`/offers/${offer.id}`}
-                className="group bg-white/5 backdrop-blur-md rounded-3xl border border-white/10 hover:border-emerald-500/40 hover:bg-white/10 transition-all duration-300 flex flex-col overflow-hidden relative"
+                onClick={() => track('CLICK_OFFER_CARD', { offer_id: offer.offer_id, name: offer.name })}
+                className="bg-white/5 backdrop-blur-md rounded-3xl border border-white/10 hover:border-white/20 overflow-hidden transition-all hover:shadow-2xl hover:shadow-emerald-500/10 hover:-translate-y-1 group flex flex-col h-full"
               >
                 <div className="p-6 flex-1">
                   <div className="flex items-start justify-between mb-4">

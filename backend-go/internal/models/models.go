@@ -70,3 +70,13 @@ type CallbackLog struct {
 	Status        string    `json:"status"`
 	CreatedAt     time.Time `gorm:"autoCreateTime" json:"created_at"`
 }
+
+type ActivityLog struct {
+	ID        uint           `gorm:"primaryKey" json:"id"`
+	UserID    uint           `gorm:"index" json:"user_id"`
+	Action    string         `gorm:"index" json:"action"`
+	Metadata  datatypes.JSON `json:"metadata"`
+	IPAddress string         `json:"ip_address"`
+	UserAgent string         `json:"user_agent"`
+	CreatedAt time.Time      `gorm:"autoCreateTime" json:"created_at"`
+}

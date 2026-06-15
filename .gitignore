@@ -1,0 +1,20 @@
+# macOS
+.DS_Store
+
+# Local dev runtime files
+*.log
+.earnsaga.pids
+
+# Env files
+*.env
+.env
+.env.*
+
+# Node
+node_modules/
+dist/
+.vite/
+
+# Go binary
+backend-go/main
+tmp/

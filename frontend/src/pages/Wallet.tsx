@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '../lib/api';
+import { useAuth } from '../lib/AuthContext';
+import { useAnalytics } from '../hooks/useAnalytics';
 import { Coins, ArrowUpRight, ArrowDownRight, Clock, Zap, CreditCard, CheckCircle2 } from 'lucide-react';
 
 export const Wallet = () => {
+  const { user } = useAuth();
+  const { track } = useAnalytics();
   const [isRedeeming, setIsRedeeming] = useState(false);
   const [payoutMethod, setPayoutMethod] = useState('PayPal');
   const [payoutStatus, setPayoutStatus] = useState<{loading: boolean, error: string | null, success: boolean}>({
@@ -17,8 +21,13 @@ export const Wallet = () => {
     }
   });
 
+  React.useEffect(() => {
+    track('PAGE_VIEW', { page: 'Wallet' });
+  }, [track]);
+
   const handlePayout = async () => {
     try {
+      track('REQUEST_PAYOUT', { method: payoutMethod });
       setPayoutStatus({ loading: true, error: null, success: false });
       await api.post('/wallet/payout', { amount: 1000, method: payoutMethod });
       setPayoutStatus({ loading: false, error: null, success: true });
@@ -154,7 +163,7 @@ export const Wallet = () => {
                       </div>
                       <div>
                         <p className="text-sm font-bold text-white uppercase tracking-wide">
-                          {tx.type === 'CREDIT' ? 'Offer Completion' : 'Withdrawal'}
+                          {tx.reference?.startsWith('Engagement Reward') ? 'Engagement Reward' : tx.type === 'CREDIT' ? 'Offer Completion' : 'Withdrawal'}
                         </p>
                         <p className="text-xs text-slate-500 mt-0.5 font-medium flex items-center gap-1.5">
                           <span className="bg-white/5 text-slate-400 px-2 py-0.5 rounded font-mono">{tx.reference}</span>

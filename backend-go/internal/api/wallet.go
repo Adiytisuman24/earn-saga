@@ -39,6 +39,9 @@ func RequestPayout(c *gin.Context) {
 		return
 	}
 
+	var newBalance int
+	insufficient := false
+
 	txErr := db.DB.Transaction(func(tx *gorm.DB) error {
 		var wallet models.Wallet
 		// Lock the row for update to prevent race conditions
@@ -47,7 +50,7 @@ func RequestPayout(c *gin.Context) {
 		}
 
 		if wallet.Balance < req.Amount {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Insufficient balance"})
+			insufficient = true
 			return nil // Return nil to avoid rolling back and throwing 500
 		}
 
@@ -66,11 +69,17 @@ func RequestPayout(c *gin.Context) {
 			return err
 		}
 
-		c.JSON(http.StatusOK, gin.H{"message": "Payout requested successfully", "new_balance": wallet.Balance})
+		newBalance = wallet.Balance
 		return nil
 	})
 
 	if txErr != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to process payout"})
+		return
 	}
+	if insufficient {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Insufficient balance"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "Payout requested successfully", "new_balance": newBalance})
 }

@@ -83,33 +83,16 @@ func StartOffer(c *gin.Context) {
 		db.DB.Create(&userOffer)
 	}
 
-	// Replace {your_user_id} with actual user ID in the tracking URL
-	realTrackingUrl := strings.Replace(offer.TrkURL, "{your_user_id}", strconv.Itoa(int(userId)), -1)
+	// Replace all known user_id placeholder variants in the tracking URL
+	userIdStr := strconv.Itoa(int(userId))
+	realTrackingUrl := offer.TrkURL
+	for _, placeholder := range []string{"{your_user_id}", "{USER_ID}", "[USER_ID]", "{subid}", "{aff_sub}"} {
+		realTrackingUrl = strings.ReplaceAll(realTrackingUrl, placeholder, userIdStr)
+	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"redirectUrl": realTrackingUrl,
 	})
-}
-
-func replaceAll(s, old, new string) string {
-	result := s
-	for {
-		idx := indexOf(result, old)
-		if idx < 0 {
-			break
-		}
-		result = result[:idx] + new + result[idx+len(old):]
-	}
-	return result
-}
-
-func indexOf(s, sub string) int {
-	for i := 0; i <= len(s)-len(sub); i++ {
-		if s[i:i+len(sub)] == sub {
-			return i
-		}
-	}
-	return -1
 }
 
 // PubScale API response structures

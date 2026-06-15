@@ -25,6 +25,7 @@ func main() {
 	r.Use(cors.New(cors.Config{
 		AllowOrigins: []string{
 			"http://localhost:5173",
+			"http://localhost:5174",
 			"http://localhost:3000",
 			"http://localhost:5000",
 			"https://earn-saga.vercel.app",
@@ -52,7 +53,7 @@ func main() {
 
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "3000"
+		port = "8080"
 	}
 	log.Printf("Server running on port %s", port)
 	if err := r.Run(":" + port); err != nil {
