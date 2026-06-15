@@ -1,0 +1,95 @@
+#!/bin/bash
+
+# EarnSaga Lite Local Development Manager
+# Commands: start, stop, logs, status
+
+PIDS_FILE=".earnsaga.pids"
+BACKEND_LOG="backend.log"
+FRONTEND_LOG="frontend.log"
+
+function start() {
+    if [ -f "$PIDS_FILE" ]; then
+        echo "⚠️  EarnSaga appears to be already running. Run './earnsaga-lite stop' first."
+        exit 1
+    fi
+
+    echo "🚀 Starting EarnSaga Local Environment..."
+    
+    # Start Backend
+    echo "Starting Backend (Go)..."
+    cd backend-go || exit
+    go run cmd/main.go > "../$BACKEND_LOG" 2>&1 &
+    BACKEND_PID=$!
+    cd ..
+
+    # Start Frontend
+    echo "Starting Frontend (Vite)..."
+    cd frontend || exit
+    npm run dev > "../$FRONTEND_LOG" 2>&1 &
+    FRONTEND_PID=$!
+    cd ..
+
+    echo "$BACKEND_PID" > "$PIDS_FILE"
+    echo "$FRONTEND_PID" >> "$PIDS_FILE"
+
+    echo "✅ Servers started successfully!"
+    echo "   Frontend: http://localhost:5173"
+    echo "   Backend:  http://localhost:8080"
+    echo "   Logs:     Run './earnsaga-lite logs'"
+    echo "   Stop:     Run './earnsaga-lite stop'"
+}
+
+function stop() {
+    if [ ! -f "$PIDS_FILE" ]; then
+        echo "⚠️  No active processes found (missing $PIDS_FILE)."
+        # Attempt to kill stranded processes if PIDS file is missing
+        pkill -f "go run cmd/main.go" 2>/dev/null
+        pkill -f "vite" 2>/dev/null
+        exit 0
+    fi
+
+    echo "🛑 Stopping EarnSaga Servers..."
+    while read -r pid; do
+        if kill -0 "$pid" 2>/dev/null; then
+            kill "$pid"
+            echo "Killed process $pid"
+        fi
+    done < "$PIDS_FILE"
+    
+    rm "$PIDS_FILE"
+    echo "✅ All servers stopped."
+}
+
+function logs() {
+    echo "📄 Tailing logs (Press Ctrl+C to exit)..."
+    tail -f "$BACKEND_LOG" "$FRONTEND_LOG"
+}
+
+function status() {
+    if [ -f "$PIDS_FILE" ]; then
+        echo "🟢 EarnSaga is RUNNING."
+        echo "PIDs:"
+        cat "$PIDS_FILE"
+    else
+        echo "🔴 EarnSaga is STOPPED."
+    fi
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    logs)
+        logs
+        ;;
+    status)
+        status
+        ;;
+    *)
+        echo "Usage: ./earnsaga-lite {start|stop|logs|status}"
+        exit 1
+        ;;
+esac
