@@ -5,6 +5,9 @@ import (
 )
 
 func RegisterRoutes(r *gin.Engine) {
+	// Root level callback route for PubScale S2S webhook to match user expectations exactly
+	r.GET("/callback", Callback)
+
 	api := r.Group("/api")
 
 	api.POST("/auth/google", GoogleLogin)
