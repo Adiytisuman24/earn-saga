@@ -193,19 +193,31 @@ export const OfferDetail = () => {
               <div className="mt-10">
                 <h3 className="text-base font-bold text-white mb-4 uppercase tracking-widest text-xs text-slate-400">Steps to Complete</h3>
                 <ul className="space-y-3">
-                  {parsedGoals.map((goal: any, idx: number) => (
-                    <li key={idx} className="bg-white/5 p-5 rounded-2xl border border-white/10 flex items-start gap-4">
-                      <div className="bg-emerald-500/20 text-emerald-400 w-7 h-7 rounded-full flex items-center justify-center font-black text-sm shrink-0 border border-emerald-500/30">
-                        {idx + 1}
-                      </div>
-                      <div>
-                        <h4 className="font-bold text-white text-sm">{goal.ttl || goal.title || 'Complete Task'}</h4>
-                        {(goal.instr || goal.instructions) && (
-                          <p className="text-slate-400 text-sm mt-1 font-medium">{goal.instr || goal.instructions}</p>
+                  {parsedGoals.map((goal: any, idx: number) => {
+                    const isCompleted = status === 'COMPLETED';
+                    const hasReward = goal.inapp_pyt?.amt || goal.pyt?.amt;
+                    return (
+                      <li key={idx} className={`p-5 rounded-2xl border flex items-start gap-4 transition-colors ${isCompleted ? 'bg-emerald-500/10 border-emerald-500/20' : 'bg-white/5 border-white/10'}`}>
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 border ${isCompleted ? 'bg-emerald-500 text-[#0A0514] border-emerald-400 shadow-lg shadow-emerald-500/30' : 'bg-emerald-500/20 text-emerald-400 font-black text-sm border-emerald-500/30'}`}>
+                          {isCompleted ? <CheckCircle2 size={18} strokeWidth={3} /> : idx + 1}
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="font-bold text-white text-sm">{goal.ttl || goal.title || 'Complete Task'}</h4>
+                          {(goal.instr || goal.instructions) && (
+                            <p className="text-slate-400 text-sm mt-1 font-medium leading-relaxed">{goal.instr || goal.instructions}</p>
+                          )}
+                        </div>
+                        {hasReward && (
+                          <div className={`shrink-0 flex items-center px-3 py-1.5 rounded-xl border ${isCompleted ? 'bg-emerald-500/20 border-emerald-500/30 text-emerald-400' : 'bg-white/5 border-white/10 text-slate-300'}`}>
+                            <Coins size={14} className="mr-1.5" />
+                            <span className="text-sm font-black tracking-tight">
+                              +{goal.inapp_pyt?.amt ? goal.inapp_pyt.amt : `$${goal.pyt?.amt}`}
+                            </span>
+                          </div>
                         )}
-                      </div>
-                    </li>
-                  ))}
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
             )}

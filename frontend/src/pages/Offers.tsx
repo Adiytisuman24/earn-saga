@@ -6,6 +6,7 @@ import { Search, Coins, ChevronRight, RefreshCw, Smartphone, Globe, Zap } from '
 
 export const Offers = () => {
   const [search, setSearch] = useState('');
+  const [filterOS, setFilterOS] = useState<'all' | 'app' | 'web'>('all');
   const [isSyncing, setIsSyncing] = useState(false);
 
   const { data, isLoading, refetch } = useQuery({
@@ -58,6 +59,26 @@ export const Offers = () => {
                 onChange={(e) => setSearch(e.target.value)}
               />
             </div>
+            <div className="flex bg-white/5 rounded-2xl p-1 border border-white/10">
+              <button
+                onClick={() => setFilterOS('all')}
+                className={`px-4 py-1.5 rounded-xl text-sm font-bold transition-all ${filterOS === 'all' ? 'bg-white/10 text-white' : 'text-slate-400 hover:text-white'}`}
+              >
+                All
+              </button>
+              <button
+                onClick={() => setFilterOS('app')}
+                className={`px-4 py-1.5 rounded-xl text-sm font-bold transition-all ${filterOS === 'app' ? 'bg-emerald-500/20 text-emerald-400' : 'text-slate-400 hover:text-white'}`}
+              >
+                App
+              </button>
+              <button
+                onClick={() => setFilterOS('web')}
+                className={`px-4 py-1.5 rounded-xl text-sm font-bold transition-all ${filterOS === 'web' ? 'bg-purple-500/20 text-purple-400' : 'text-slate-400 hover:text-white'}`}
+              >
+                Web
+              </button>
+            </div>
             <button
               onClick={handleSync}
               disabled={isSyncing}
@@ -96,7 +117,17 @@ export const Offers = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {data.map((offer: any) => (
+            {data
+              .filter((offer: any) => {
+                if (filterOS === 'app') {
+                  return offer.os?.toLowerCase().includes('android') || offer.os?.toLowerCase().includes('ios');
+                }
+                if (filterOS === 'web') {
+                  return offer.os?.toLowerCase().includes('web') || offer.os?.toLowerCase() === 'all' || !offer.os;
+                }
+                return true;
+              })
+              .map((offer: any) => (
               <Link
                 key={offer.id}
                 to={`/offers/${offer.id}`}
