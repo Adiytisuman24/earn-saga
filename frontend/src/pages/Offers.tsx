@@ -61,10 +61,10 @@ export const Offers = () => {
             <button
               onClick={handleSync}
               disabled={isSyncing}
-              className="inline-flex items-center px-4 py-2.5 border border-emerald-500/30 shadow-sm text-sm font-bold rounded-2xl text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 focus:outline-none transition-colors disabled:opacity-50"
-              title="Sync offers from PubScale"
+              className="inline-flex items-center gap-2 px-6 py-2.5 border border-emerald-500/30 shadow-sm text-sm font-bold rounded-2xl text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 focus:outline-none transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:hover:translate-y-0 whitespace-nowrap"
             >
               <RefreshCw className={`h-4 w-4 ${isSyncing ? 'animate-spin' : ''}`} />
+              {isSyncing ? 'Syncing...' : 'Sync Offers'}
             </button>
           </div>
         </div>
