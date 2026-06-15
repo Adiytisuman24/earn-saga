@@ -52,21 +52,8 @@ export const OfferDetail = () => {
       setIsStarting(true);
       const res = await api.post(`/offers/${id}/start`);
       if (res.data.redirectUrl) {
-        const isAppOrGame = data?.offer?.off_type?.toLowerCase() === 'game' || 
-                            data?.offer?.off_type?.toLowerCase() === 'app' ||
-                            data?.offer?.os?.toLowerCase().includes('android') ||
-                            data?.offer?.os?.toLowerCase().includes('ios');
-        const isDesktop = !/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        
-        if (isAppOrGame && isDesktop) {
-          // If it is an App/Game and user is on Desktop, show the QR Code
-          setQrUrl(res.data.redirectUrl);
-          // Refetch in background in case they scan it and complete
-          setTimeout(() => refetch(), 2000);
-        } else {
-          // Otherwise redirect directly (Website offer or mobile device user)
-          window.location.href = res.data.redirectUrl;
-        }
+        // Navigate to the Mock Affiliate Network (tracks → checkout → postback → wallet)
+        window.location.href = res.data.redirectUrl;
       }
     } catch (err: any) {
       if (err.response?.data?.status) {

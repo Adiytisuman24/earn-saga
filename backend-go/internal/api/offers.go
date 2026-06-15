@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 	"os"
 	"strconv"
 
@@ -44,9 +45,13 @@ func GetOfferDetails(c *gin.Context) {
 	var userOffer models.UserOffer
 	db.DB.Where("user_id = ? AND offer_id = ?", userId, offer.ID).First(&userOffer)
 
+	encodedName := url.QueryEscape(offer.Name)
+	mockNetworkUrl := fmt.Sprintf("/api/mock-network/click?user_id=%d&offer_id=%s&value=%d&name=%s", userId, offer.OfferID, offer.InappPytAmt, encodedName)
+
 	c.JSON(http.StatusOK, gin.H{
-		"offer":     offer,
-		"userOffer": userOffer,
+		"offer":       offer,
+		"userOffer":   userOffer,
+		"redirectUrl": mockNetworkUrl,
 	})
 }
 
@@ -77,12 +82,12 @@ func StartOffer(c *gin.Context) {
 		db.DB.Create(&userOffer)
 	}
 
-	// For demo purposes, we always redirect to the simulation page so the user can complete the flow
+	// Redirect through our Mock Affiliate Network for perfect single-tab simulation
 	encodedName := url.QueryEscape(offer.Name)
-	trackingURL := fmt.Sprintf("/api/callback/simulate?user_id=%d&offer_id=%s&value=%d&name=%s", userId, offer.OfferID, offer.InappPytAmt, encodedName)
+	mockNetworkUrl := fmt.Sprintf("/api/mock-network/click?user_id=%d&offer_id=%s&value=%d&name=%s", userId, offer.OfferID, offer.InappPytAmt, encodedName)
 
 	c.JSON(http.StatusOK, gin.H{
-		"redirectUrl": trackingURL,
+		"redirectUrl": mockNetworkUrl,
 	})
 }
 

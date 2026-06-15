@@ -57,8 +57,11 @@ export const Navbar = () => {
                   {user.name?.charAt(0).toUpperCase()}
                 </div>
               )}
-              <span className="text-slate-300 font-medium text-sm">
-                Welcome, <span className="text-white font-bold">{user.name?.split(' ')[0]}</span>
+              <span className="text-slate-300 font-medium text-sm flex flex-col sm:flex-row items-start sm:items-center gap-1">
+                <span>Welcome, <span className="text-white font-bold">{user.name?.split(' ')[0]}</span></span>
+                <span className="text-xs font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-500/20" title="Your PubScale Test User ID">
+                  ID: {user.id}
+                </span>
               </span>
             </div>
 
