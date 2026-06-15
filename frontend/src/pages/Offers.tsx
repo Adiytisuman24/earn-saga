@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '../lib/api';
 import { Link } from 'react-router-dom';
-import { Search, Coins, ChevronRight, RefreshCw, Smartphone, Globe, Zap } from 'lucide-react';
+import { Search, Coins, ChevronRight, RefreshCw, Smartphone, Globe, Zap, Monitor, ChevronDown } from 'lucide-react';
 
 export const Offers = () => {
   const [search, setSearch] = useState('');
-  const [filterOS, setFilterOS] = useState<'all' | 'android' | 'ios' | 'web'>('all');
+  const [activeOs, setActiveOs] = useState<'desktop' | 'android' | 'ios' | null>(null);
   const [isSyncing, setIsSyncing] = useState(false);
 
   const { data, isLoading, refetch } = useQuery({
@@ -30,69 +30,80 @@ export const Offers = () => {
     }
   };
 
+  const toggleOs = (os: 'desktop' | 'android' | 'ios') => {
+    setActiveOs(activeOs === os ? null : os);
+  };
+
   return (
     <div className="min-h-screen bg-[#0A0514] text-white">
       {/* Background Glows */}
       <div className="fixed top-0 left-[-10%] w-[50%] h-[50%] bg-purple-600/20 rounded-full blur-[120px] pointer-events-none"></div>
       <div className="fixed bottom-0 right-[-10%] w-[50%] h-[50%] bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none"></div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4 bg-white/5 backdrop-blur-md border border-white/10 p-6 rounded-3xl">
-          <div>
-            <h1 className="text-3xl font-black text-white tracking-tight flex items-center gap-2">
-              <Zap className="w-7 h-7 text-emerald-400 fill-emerald-400" />
-              Available Offers
-            </h1>
-            <p className="mt-1 text-slate-400 font-medium">Complete tasks to earn real rewards</p>
+      <div className="relative z-10 max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        {/* Top Navigation Bar from Mockup */}
+        <div className="flex flex-col lg:flex-row justify-between items-center gap-4 mb-8 bg-[#110C1D] border border-white/5 p-4 rounded-2xl shadow-lg">
+          
+          {/* OS Filters */}
+          <div className="flex items-center gap-2 w-full lg:w-auto">
+            <button
+              onClick={() => toggleOs('desktop')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all border ${activeOs === 'desktop' ? 'bg-white/10 border-white/20 text-white' : 'bg-transparent border-white/5 text-slate-400 hover:text-white hover:bg-white/5'}`}
+            >
+              <Monitor size={16} /> Desktop
+            </button>
+            <button
+              onClick={() => toggleOs('android')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all border ${activeOs === 'android' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-transparent border-white/5 text-slate-400 hover:text-white hover:bg-white/5'}`}
+            >
+              <Smartphone size={16} /> Android
+            </button>
+            <button
+              onClick={() => toggleOs('ios')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all border ${activeOs === 'ios' ? 'bg-blue-500/10 border-blue-500/20 text-blue-400' : 'bg-transparent border-white/5 text-slate-400 hover:text-white hover:bg-white/5'}`}
+            >
+              <Smartphone size={16} /> iOS
+            </button>
           </div>
-          <div className="flex w-full sm:w-auto gap-3">
-            <div className="relative flex-grow sm:flex-grow-0 sm:w-64">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <Search className="h-4 w-4 text-slate-500" />
-              </div>
-              <input
-                type="text"
-                className="block w-full pl-10 pr-4 py-2.5 border border-white/10 rounded-2xl bg-white/5 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 sm:text-sm font-medium transition-all"
-                placeholder="Search offers..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            <div className="flex bg-white/5 rounded-2xl p-1 border border-white/10 overflow-x-auto max-w-full no-scrollbar">
-              <button
-                onClick={() => setFilterOS('all')}
-                className={`px-4 py-1.5 rounded-xl text-sm font-bold transition-all whitespace-nowrap ${filterOS === 'all' ? 'bg-white/10 text-white' : 'text-slate-400 hover:text-white'}`}
-              >
-                All
-              </button>
-              <button
-                onClick={() => setFilterOS('android')}
-                className={`px-4 py-1.5 rounded-xl text-sm font-bold transition-all whitespace-nowrap ${filterOS === 'android' ? 'bg-emerald-500/20 text-emerald-400' : 'text-slate-400 hover:text-white'}`}
-              >
-                Android
-              </button>
-              <button
-                onClick={() => setFilterOS('ios')}
-                className={`px-4 py-1.5 rounded-xl text-sm font-bold transition-all whitespace-nowrap ${filterOS === 'ios' ? 'bg-blue-500/20 text-blue-400' : 'text-slate-400 hover:text-white'}`}
-              >
-                iPhone
-              </button>
-              <button
-                onClick={() => setFilterOS('web')}
-                className={`px-4 py-1.5 rounded-xl text-sm font-bold transition-all whitespace-nowrap ${filterOS === 'web' ? 'bg-purple-500/20 text-purple-400' : 'text-slate-400 hover:text-white'}`}
-              >
-                Web
-              </button>
+
+          {/* Search Bar */}
+          <div className="relative w-full lg:max-w-md">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <Search className="h-4 w-4 text-slate-500" />
             </div>
+            <input
+              type="text"
+              className="block w-full pl-10 pr-4 py-2.5 border border-white/5 rounded-xl bg-[#1A1527] text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-white/20 sm:text-sm font-medium transition-all"
+              placeholder="Search offers..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+
+          {/* Categories & Sync */}
+          <div className="flex items-center gap-3 w-full lg:w-auto justify-end">
+            <button className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold bg-transparent border border-white/5 text-slate-300 hover:bg-white/5 transition-all">
+              Categories <ChevronDown size={14} className="text-slate-500" />
+            </button>
+            <button className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold bg-transparent border border-white/5 text-slate-300 hover:bg-white/5 transition-all">
+              Recommended <ChevronDown size={14} className="text-slate-500" />
+            </button>
             <button
               onClick={handleSync}
               disabled={isSyncing}
-              className="inline-flex items-center gap-2 px-6 py-2.5 border border-emerald-500/30 shadow-sm text-sm font-bold rounded-2xl text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 focus:outline-none transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:hover:translate-y-0 whitespace-nowrap"
+              className="p-2.5 rounded-xl border border-emerald-500/20 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 transition-all disabled:opacity-50"
+              title="Sync Offers"
             >
-              <RefreshCw className={`h-4 w-4 ${isSyncing ? 'animate-spin' : ''}`} />
-              {isSyncing ? 'Syncing...' : 'Sync Offers'}
+              <RefreshCw size={16} className={isSyncing ? 'animate-spin' : ''} />
             </button>
           </div>
+        </div>
+
+        {/* Title */}
+        <div className="flex items-center gap-2 mb-6">
+          <Zap className="w-5 h-5 text-blue-500 fill-blue-500" />
+          <h2 className="text-xl font-bold text-white tracking-tight">Available Offers</h2>
         </div>
 
         {isLoading ? (
@@ -124,14 +135,14 @@ export const Offers = () => {
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {data
               .filter((offer: any) => {
-                if (filterOS === 'android') {
+                if (activeOs === 'android') {
                   return offer.os?.toLowerCase().includes('android');
                 }
-                if (filterOS === 'ios') {
+                if (activeOs === 'ios') {
                   return offer.os?.toLowerCase().includes('ios');
                 }
-                if (filterOS === 'web') {
-                  return offer.os?.toLowerCase().includes('web') || offer.os?.toLowerCase() === 'all' || !offer.os;
+                if (activeOs === 'desktop') {
+                  return offer.os?.toLowerCase().includes('web') || offer.os?.toLowerCase().includes('desktop') || offer.os?.toLowerCase() === 'all' || !offer.os;
                 }
                 return true;
               })
