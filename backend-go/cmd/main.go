@@ -29,6 +29,7 @@ func main() {
 			"http://localhost:5000",
 			"https://earn-saga.vercel.app",
 			"https://earnsaga.vercel.app",
+			"https://earn-saga-sepia.vercel.app",
 			// wildcard for any vercel preview
 			"https://earn-saga-git-main-adiytisuman24.vercel.app",
 		},
